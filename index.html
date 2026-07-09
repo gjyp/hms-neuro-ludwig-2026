@@ -233,7 +233,7 @@ textarea{resize:vertical;min-height:68px}
         <h1 class="hero-title"><span id="ev-t1">THE LUDWIG</span><br><span id="ev-t2">SYMPOSIUM</span></h1>
         <div class="hero-tagline" id="ev-tagline">The Biology of Neurodegeneration &amp; Discovering New Therapies</div>
         <div class="hero-when" id="ev-date">Tuesday, September 29, 2026 · 1 – 5 PM</div>
-        <div class="hero-where" id="ev-venue">Veritas Science Center · 77 Avenue Louis Pasteur</div>
+        <div class="hero-where" id="ev-venue">Veritas Science Center<br>77 Avenue Louis Pasteur</div>
         <div class="hero-status"><span class="banner sm" id="ev-status">Registration open</span></div>
       </div>
       <div class="hero-side">
@@ -281,7 +281,7 @@ textarea{resize:vertical;min-height:68px}
             <div class="reg-aside">
               <div>
                 <div class="reg-evt-title" id="aside-title">THE LUDWIG<br>SYMPOSIUM</div>
-                <div class="reg-evt-when" id="aside-when">Tuesday, September 29, 2026<br>1 – 5 PM<div class="aside-venue">Veritas Science Center · 77 Avenue Louis Pasteur</div></div>
+                <div class="reg-evt-when" id="aside-when">Tuesday, September 29, 2026<br>1 – 5 PM<div class="aside-venue">Veritas Science Center<br>77 Avenue Louis Pasteur</div></div>
                 <div class="steps" id="steps-list"></div>
               </div>
               <div class="deadline">Registration closes<br><b id="ev-deadline">September 22, 2026</b></div>
@@ -508,7 +508,13 @@ async function loadSiteContent() {
         ? `${esc(EVENT.tagline.slice(0, ci + 1))}<br>${esc(EVENT.tagline.slice(ci + 1).trim())}`
         : esc(EVENT.tagline);
     }
-    set('ev-venue', EVENT.venue_line); set('ev-sponsor', EVENT.sponsor_line);
+    set('ev-sponsor', EVENT.sponsor_line);
+    const ve = document.getElementById('ev-venue');
+    if (ve) {
+      let parts = [EVENT.venue_name, EVENT.venue_address].filter(v => v != null && v !== '');
+      if (!parts.length && EVENT.venue_line) parts = EVENT.venue_line.split('·').map(s => s.trim()).filter(Boolean);
+      ve.innerHTML = parts.map(esc).join('<br>');
+    }
     set('ev-deadline', EVENT.reg_deadline);
     set('contact-email', EVENT.contact_email); set('closed-contact', EVENT.contact_email);
     set('conf-event', (EVENT.title_line1 || '') + ' ' + (EVENT.title_line2 || ''));
@@ -518,7 +524,10 @@ async function loadSiteContent() {
     const aw = document.getElementById('aside-when');
     if (aw) {
       const dateLines = (EVENT.date_line || '').split('·').map(s => s.trim()).filter(Boolean).map(esc).join('<br>');
-      aw.innerHTML = dateLines + `<div class="aside-venue">${esc(EVENT.venue_line || '')}</div>`;
+      let vparts = [EVENT.venue_name, EVENT.venue_address].filter(v => v != null && v !== '');
+      if (!vparts.length && EVENT.venue_line) vparts = EVENT.venue_line.split('·').map(s => s.trim()).filter(Boolean);
+      const venueLines = vparts.map(esc).join('<br>');
+      aw.innerHTML = dateLines + `<div class="aside-venue">${venueLines}</div>`;
     }
     if (EVENT.hero_image_url) document.getElementById('hero-img').style.backgroundImage = `url('${EVENT.hero_image_url}')`;
     if (EVENT.sponsor_logo_url) document.getElementById('ev-logo').src = EVENT.sponsor_logo_url;
