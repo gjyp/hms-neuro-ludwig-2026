@@ -507,7 +507,7 @@ async function loadSiteContent() {
   const evt = data.find(r => r.id === 'event_info');
   if (evt) {
     EVENT = evt.content;
-    const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
     set('ev-t1', EVENT.title_line1); set('ev-t2', EVENT.title_line2);
     set('ev-tagline', EVENT.tagline); set('ev-date', EVENT.date_line);
     set('ev-venue', EVENT.venue_line); set('ev-sponsor', EVENT.sponsor_line);
@@ -536,7 +536,7 @@ async function loadSiteContent() {
   const rf = data.find(r => r.id === 'reg_form');
   if (rf) {
     const r = rf.content;
-    const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
     set('s1-title', r.step1_title); set('s1-sub', r.step1_subtitle);
     set('s2-title', r.step2_title); set('s2-sub', r.step2_subtitle);
     set('conf-title', r.confirm_title); set('conf-message', r.confirm_message);
@@ -550,7 +550,7 @@ async function loadSiteContent() {
   const pf = data.find(r => r.id === 'poster_form');
   if (pf) {
     const p = pf.content;
-    const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
     set('pf-title', p.form_title); set('ps-title', p.success_title); set('ps-message', p.success_message);
     set('pf-deadline', p.submission_deadline);
     if (p.abstract_word_limit) { ABSTRACT_LIMIT = p.abstract_word_limit; updateWordCount(); }
