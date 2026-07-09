@@ -193,7 +193,7 @@ tbody tr:hover{background:#FDF9F0}
       <div class="group-head"><span class="group-title">VIPs</span><span class="group-count" id="vip-count"></span></div>
       <div class="table-wrap">
       <table>
-        <thead><tr><th>Name</th><th>Type</th><th>Email</th><th>Institution</th><th>Role</th><th>Talk / panel</th><th>Dinner</th><th>Dietary</th><th>Status</th><th>✓ In</th></tr></thead>
+        <thead><tr><th>Name</th><th>Email</th><th>Institution</th><th>Role</th><th>Talk title</th><th>Dinner</th><th>Dietary</th><th>Status</th><th>✓ In</th></tr></thead>
         <tbody id="vip-tbody"></tbody>
       </table>
       </div>
@@ -304,7 +304,7 @@ tbody tr:hover{background:#FDF9F0}
         <div class="field"><label>Special requests</label><input type="text" id="rm-requests" /></div>
       </div>
       <hr class="divider" />
-      <div class="field"><label>Talk / panel title (speakers &amp; program)</label><input type="text" id="rm-talk" /></div>
+      <div class="field"><label>Talk title (speakers &amp; program)</label><input type="text" id="rm-talk" /></div>
       <div class="field"><label>Bio for program</label><textarea id="rm-bio"></textarea></div>
       <div class="grid2">
         <div class="field"><label>AV / presentation needs</label><input type="text" id="rm-av" /></div>
@@ -430,7 +430,6 @@ function renderRegs(){
 
   document.getElementById('vip-tbody').innerHTML=vips.map(r=>`<tr onclick="openRegModal('${r.id}')">
     <td style="font-weight:700">${esc(r.first_name)} ${esc(r.last_name)}</td>
-    <td><span class="pill ${esc(r.attendee_type)}">${esc(r.attendee_type)}</span></td>
     <td>${esc(r.email)}</td>
     <td>${esc(r.institution||'—')}</td>
     <td>${esc(r.role_category||'—')}</td>
