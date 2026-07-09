@@ -124,6 +124,16 @@ tbody tr:hover{background:#FDF9F0}
 .group-head{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--gold)}
 .group-title{font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--navy)}
 .group-count{font-size:12px;font-weight:600;color:var(--muted)}
+.ui-section{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;background:var(--paper);overflow:hidden}
+.ui-section>summary{list-style:none;cursor:pointer;padding:11px 16px;background:var(--cream);display:flex;align-items:center;gap:10px}
+.ui-section>summary::-webkit-details-marker{display:none}
+.ui-section>summary::before{content:'▸';color:var(--coral);font-size:11px;transition:transform .15s}
+.ui-section[open]>summary::before{transform:rotate(90deg)}
+.ui-sec-title{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.05em;text-transform:uppercase;color:var(--navy)}
+.ui-section-hint{margin-left:auto;font-size:12px;color:var(--muted);font-weight:500;text-align:right}
+.ui-body{padding:14px 16px 4px}
+.ui-key{text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;font-size:11px}
+.ui-field-hint{font-size:11.5px;color:var(--muted);margin-top:3px}
 </style>
 </head>
 <body>
@@ -710,7 +720,8 @@ function renderEventEditor(){
         ${fieldRow('event_info','title_line1','Title line 1',e.title_line1)}
         ${fieldRow('event_info','title_line2','Title line 2',e.title_line2)}
         ${fieldRow('event_info','date_line','Date line',e.date_line)}
-        ${fieldRow('event_info','venue_line','Venue line',e.venue_line)}
+        ${fieldRow('event_info','venue_name','Venue name',e.venue_name)}
+        ${fieldRow('event_info','venue_address','Street address',e.venue_address)}
         ${fieldRow('event_info','reg_deadline','Registration deadline (display text)',e.reg_deadline)}
         ${fieldRow('event_info','contact_email','Contact email',e.contact_email)}
       </div>
@@ -722,7 +733,7 @@ function renderEventEditor(){
         <div class="field"><label>Upload hero image</label><input type="file" id="hero-upload" accept="image/*" onchange="uploadHero(this)" /><span class="note" id="hero-note"></span></div>
         <div class="field"><label>Upload sponsor logo</label><input type="file" id="logo-upload" accept="image/*" onchange="uploadSponsorLogo(this)" /><span class="note" id="logo-note"></span></div>
       </div>
-      <button class="btn btn-gold" onclick="saveContentFields('event_info',['title_line1','title_line2','date_line','venue_line','reg_deadline','contact_email','tagline','sponsor_line','hero_image_url','sponsor_logo_url'])">Save event header</button>
+      <button class="btn btn-gold" onclick="saveContentFields('event_info',['title_line1','title_line2','date_line','venue_name','venue_address','reg_deadline','contact_email','tagline','sponsor_line','hero_image_url','sponsor_logo_url'])">Save event header</button>
       <span class="save-note" id="note-event_info"></span>
     </div>
     <div class="content-block">
@@ -901,11 +912,43 @@ async function deleteContentRow(id){
 }
 
 // ═══════ PAGE TEXT (UI labels) ═══════
-const UI_GROUPS = {
-  sponsor:'Header', tab:'Tabs', program:'Program page',
-  reg:'Registration form', btn:'Buttons', conf:'Confirmation screen',
-  closed:'Registration closed', lookup:'Look-up screen', manage:'Manage screen',
-  posters:'Poster section', poster:'Poster form'
+// Sections in the order a visitor meets them on the page. Each key is
+// matched to the FIRST section whose prefix it starts with.
+const UI_SECTIONS = [
+  { title:'Header', hint:'Top bar and hero, shown on every page', keys:['sponsor.'] },
+  { title:'Navigation tabs', hint:'The three tabs across the top', keys:['tab.'] },
+  { title:'Program & Speakers tab', hint:'Headings on the Program tab', keys:['program.'] },
+  { title:'Registration · choose your path', hint:'Sidebar and the "How are you attending?" fork', keys:['reg.side_','reg.fork_','reg.choice_','reg.vip_code_label'] },
+  { title:'Registration · contact step', hint:'Field labels on the first step', keys:['reg.f_'] },
+  { title:'Registration · preferences step', hint:'Dietary, poster, and accessibility labels', keys:['reg.dietary_label','reg.poster_label','reg.poster_check','reg.poster_help','reg.accessibility'] },
+  { title:'Registration · speaker / VIP step', hint:'Extra fields only VIPs see', keys:['reg.vip_title','reg.vip_subtitle','reg.vip_talk','reg.vip_bio','reg.vip_headshot','reg.vip_av','reg.vip_travel'] },
+  { title:'Registration · buttons', hint:'Continue, Back, and submit labels', keys:['btn.'] },
+  { title:'Registration · confirmation screen', hint:'The "you\'re registered" summary', keys:['conf.'] },
+  { title:'Registration · closed / look-up / manage', hint:'Closed message and self-service look-up', keys:['closed.','lookup.','manage.'] },
+  { title:'Poster Session tab', hint:'Poster section and abstract form', keys:['posters.','poster.'] },
+  { title:'Other', hint:'', keys:[] }  // catch-all for anything unmatched
+];
+// Keys no longer shown on the page (feature removed) — hidden from the editor.
+const UI_ORPHANS = new Set(['reg.vip_type_label']);
+// Plain-English context for the less-obvious strings.
+const UI_HINTS = {
+  'sponsor.presented_by':'Small label before the foundation logo, top of page',
+  'program.subtitle':'Grey line under the "Program & Speakers" heading',
+  'program.materials_title':'Heading above the downloadable documents',
+  'reg.choice_attendee_title':'Yellow banner on the left choice card',
+  'reg.choice_attendee_desc':'Grey text under the left choice card',
+  'reg.choice_vip_title':'Yellow banner on the right (VIP) choice card',
+  'reg.choice_vip_desc':'Grey text under the right (VIP) choice card',
+  'reg.fork_title':'Heading on the "how are you attending" screen',
+  'reg.f_phone_help':'Small grey note under the phone field',
+  'reg.poster_check':'The "I plan to present a poster" checkbox',
+  'reg.vip_talk_note':'The "(if applicable)" note beside talk title',
+  'conf.confirmed':'Green badge on the confirmation card',
+  'conf.registering':'Label for the attendee-type row (Attendee / VIP)',
+  'poster.form_note':'Note above the abstract form (deadline follows it)',
+  'poster.contact_prefix':'Text before the contact email at the page bottom',
+  'closed.card_text':'Shown when registration is closed',
+  'btn.submitting':'Shown briefly while a form is submitting'
 };
 function uiLabel(key){
   const part = key.includes('.') ? key.split('.').slice(1).join('.') : key;
@@ -918,25 +961,33 @@ function renderUiTextEditor(){
   if(!row){ box.innerHTML='<div class="note">The page-text record isn\'t in the database yet. Run <b>ui-text-setup.sql</b> in the Supabase SQL editor, then reload.</div>'; return; }
   const dict = row.content||{};
   const q=(document.getElementById('ui-q').value||'').toLowerCase();
-  const groups={};
+
+  // Assign each key to the first section it matches (skip orphans).
+  const buckets = UI_SECTIONS.map(()=>[]);
   Object.keys(dict).sort().forEach(k=>{
-    const g=k.split('.')[0];
-    (groups[g]=groups[g]||[]).push(k);
+    if(UI_ORPHANS.has(k)) return;
+    let idx = UI_SECTIONS.findIndex(sec => sec.keys.some(p => k.startsWith(p)));
+    if(idx<0) idx = UI_SECTIONS.length-1; // "Other"
+    buckets[idx].push(k);
   });
+
   let html='';
-  Object.keys(UI_GROUPS).forEach(g=>{
-    const keys=(groups[g]||[]).filter(k=>!q || k.toLowerCase().includes(q) || String(dict[k]).toLowerCase().includes(q));
+  UI_SECTIONS.forEach((sec,i)=>{
+    const keys = buckets[i].filter(k=>!q || k.toLowerCase().includes(q) || String(dict[k]).toLowerCase().includes(q));
     if(!keys.length) return;
-    html+=`<div class="content-block"><h3>${esc(UI_GROUPS[g])}</h3>`;
+    html+=`<details class="ui-section" open>
+      <summary><span class="ui-sec-title">${esc(sec.title)}</span>${sec.hint?`<span class="ui-section-hint">${esc(sec.hint)}</span>`:''}</summary>
+      <div class="ui-body">`;
     keys.forEach(k=>{
       const val=dict[k]==null?'':dict[k];
       const multi = String(val).length>45;
       const field = multi
         ? `<textarea id="ui-${esc(k)}">${esc(val)}</textarea>`
         : `<input type="text" id="ui-${esc(k)}" value="${attr(val)}" />`;
-      html+=`<div class="field"><label>${esc(uiLabel(k))} <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400">${esc(k)}</span></label>${field}</div>`;
+      const hint = UI_HINTS[k] ? `<div class="ui-field-hint">${esc(UI_HINTS[k])}</div>` : '';
+      html+=`<div class="field"><label>${esc(uiLabel(k))} <span class="ui-key">${esc(k)}</span></label>${field}${hint}</div>`;
     });
-    html+=`</div>`;
+    html+=`</div></details>`;
   });
   box.innerHTML = html || '<div class="note">No labels match your filter.</div>';
 }
