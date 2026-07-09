@@ -131,6 +131,10 @@ body{font-family:var(--sans);color:var(--text);background:var(--navy-deep);min-h
 .choice-card.selected{border-color:var(--coral);background:#FDF3EA}
 .choice-card p{font-size:12.5px;color:var(--muted);line-height:1.5;font-weight:500}
 .vip-gate{margin-top:14px;border:1.5px dashed var(--line);border-radius:0;padding:14px;animation:fadeUp .3s ease}
+.rsvp-toggle{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rsvp-opt{font-family:var(--sans);font-size:14px;font-weight:600;padding:16px 14px;border:1.5px solid var(--line);background:#fff;color:var(--text);cursor:pointer;transition:all .15s;text-align:center}
+.rsvp-opt:hover{border-color:var(--navy)}
+.rsvp-opt.on{border-color:var(--coral);background:#FDF3EA;color:var(--navy)}
 .step-sub{font-size:13px;color:var(--muted)}
 .field{display:flex;flex-direction:column;gap:5px}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -350,7 +354,20 @@ textarea{resize:vertical;min-height:68px}
                 <div class="field"><label class="flabel" for="v-travel" data-ui="reg.vip_travel">Travel &amp; parking</label><textarea id="v-travel" data-ph="ph.v_travel" placeholder="e.g. Arriving by car and need a parking spot; flying in the night before."></textarea></div>
                 <div class="reg-nav">
                   <button class="btn btn-ghost" onclick="goStep(2,true)" data-ui="btn.back">← Back</button>
-                  <button class="btn btn-gold" id="btn-submit-vip" onclick="submitRegistration()" data-ui="btn.complete">Complete registration →</button>
+                  <button class="btn btn-gold" onclick="goStep(5)" data-ui="btn.continue">Continue →</button>
+                </div>
+              </div>
+              <div class="reg-step" id="reg-step-5">
+                <div><div class="step-title" id="dinner-title" data-ui="reg.dinner_title">Dinner RSVP</div><div class="step-sub" data-ui="reg.dinner_subtitle">Will you join us for the speakers' dinner following the symposium?</div></div>
+                <div class="field" style="margin-top:6px">
+                  <div class="rsvp-toggle">
+                    <button type="button" class="rsvp-opt" id="rsvp-yes" onclick="setRsvp(true)" data-ui="reg.dinner_yes">Yes, I'll attend</button>
+                    <button type="button" class="rsvp-opt" id="rsvp-no" onclick="setRsvp(false)" data-ui="reg.dinner_no">No, I can't make it</button>
+                  </div>
+                </div>
+                <div class="reg-nav">
+                  <button class="btn btn-ghost" onclick="goStep(3,true)" data-ui="btn.back">← Back</button>
+                  <button class="btn btn-gold" id="btn-submit-dinner" onclick="submitRegistration()" data-ui="btn.complete">Complete registration →</button>
                 </div>
               </div>
               <div class="reg-step" id="reg-step-4">
@@ -364,6 +381,7 @@ textarea{resize:vertical;min-height:68px}
                     <div class="crow"><span>Institution</span><span id="conf-inst">—</span></div>
                     <div class="crow"><span data-ui="conf.event">Event</span><span id="conf-event">The Ludwig Symposium</span></div>
                     <div class="crow"><span data-ui="conf.date">Date</span><span id="conf-date">Tuesday, September 29, 2026</span></div>
+                    <div class="crow" id="conf-dinner-row" style="display:none"><span data-ui="conf.dinner">Dinner</span><span id="conf-dinner">—</span></div>
                     <div class="crow"><span data-ui="conf.status">Status</span><span><span class="banner sm" data-ui="conf.confirmed">Confirmed</span></span></div>
                   </div>
                   <div><button class="btn btn-gold" onclick="showPage('posters')" data-ui="conf.goto_poster">Go to Poster Session →</button></div>
@@ -660,6 +678,19 @@ function applyPosterState(isOpen) {
 // ═══════ REGISTRATION FLOW ═══════
 let regCategory = null;          // 'attendee' | 'vip'
 let vipType = '';                // speaker | panelist | moderator | foundation
+let dinnerRsvp = null;           // true | false (VIP dinner step)
+let mgDinnerRsvp;                // manage-form RSVP (undefined until a manage form loads)
+function setMgRsvp(v) {
+  mgDinnerRsvp = v;
+  document.getElementById('mg-rsvp-yes').classList.toggle('on', v === true);
+  document.getElementById('mg-rsvp-no').classList.toggle('on', v === false);
+}
+function setRsvp(v) {
+  dinnerRsvp = v;
+  document.getElementById('rsvp-yes').classList.toggle('on', v === true);
+  document.getElementById('rsvp-no').classList.toggle('on', v === false);
+  showErr('reg-error', '');
+}
 const VIP_LABELS = { vip: 'VIP', speaker: 'Speaker', panelist: 'Panelist', moderator: 'Moderator', foundation: 'Foundation member' };
 
 function flowSteps() {
@@ -674,16 +705,21 @@ function flowSteps() {
     { dom: 1, label: fromEl('#s1-title', 'Contact information') },
     { dom: 2, label: fromEl('#s2-title', 'Preferences') }
   ];
-  if (regCategory === 'vip') base.push({ dom: 3, label: fromEl('[data-ui="reg.vip_title"]', 'Program & logistics') });
+  if (regCategory === 'vip') {
+    base.push({ dom: 3, label: fromEl('[data-ui="reg.vip_title"]', 'Program & logistics') });
+    base.push({ dom: 5, label: fromEl('#dinner-title', 'Dinner RSVP') });
+  }
   base.push({ dom: 4, label: 'Confirmation' });
   return base;
 }
 function renderSteps(active) {
   const list = document.getElementById('steps-list');
   if (!regCategory) { list.innerHTML = ''; return; }
-  list.innerHTML = flowSteps().map((s, i) => {
-    const state = s.dom < active ? 'done' : (s.dom === active ? 'current' : '');
-    return `<div class="step"><div class="dot ${state}">${s.dom < active ? '✓' : i + 1}</div><span class="${s.dom === active ? 'current' : ''}">${s.label}</span></div>`;
+  const steps = flowSteps();
+  const activeIdx = steps.findIndex(s => s.dom === active);
+  list.innerHTML = steps.map((s, i) => {
+    const done = i < activeIdx, current = i === activeIdx;
+    return `<div class="step"><div class="dot ${done ? 'done' : current ? 'current' : ''}">${done ? '✓' : i + 1}</div><span class="${current ? 'current' : ''}">${s.label}</span></div>`;
   }).join('');
 }
 function goStep(n, reverse) {
@@ -768,7 +804,8 @@ function collectDietary(prefix) {
 
 async function submitRegistration() {
   const vip = regCategory === 'vip';
-  const btn = document.getElementById(vip ? 'btn-submit-vip' : 'btn-submit');
+  const btn = document.getElementById(vip ? 'btn-submit-dinner' : 'btn-submit');
+  if (vip && dinnerRsvp === null) { showErr('reg-error', 'Please let us know whether you\'ll join the dinner.'); return; }
   btn.disabled = true; btn.textContent = UI('btn.submitting','Submitting…'); showErr('reg-error', '');
   const reset = () => { btn.disabled = false; btn.textContent = UI('btn.complete','Complete registration →'); };
 
@@ -809,6 +846,7 @@ async function submitRegistration() {
     reg.bio = document.getElementById('v-bio').value.trim();
     reg.av_needs = document.getElementById('v-av').value.trim();
     reg.travel_parking = document.getElementById('v-travel').value.trim();
+    reg.dinner_rsvp = dinnerRsvp;
     const { data: result, error: rpcErr } = await sb.rpc('register_vip', {
       p_code: document.getElementById('vip-code').value.trim(), p_reg: reg
     });
@@ -831,6 +869,11 @@ async function submitRegistration() {
   document.getElementById('conf-name').textContent = reg.first_name + ' ' + reg.last_name;
   document.getElementById('conf-inst').textContent = reg.institution || '—';
   document.getElementById('conf-type').textContent = vip ? VIP_LABELS[vipType] : 'Attendee';
+  const dinnerRow = document.getElementById('conf-dinner-row');
+  if (dinnerRow) {
+    dinnerRow.style.display = vip ? '' : 'none';
+    if (vip) document.getElementById('conf-dinner').textContent = dinnerRsvp ? 'Attending' : 'Not attending';
+  }
   goStep(4);
 }
 
@@ -889,6 +932,7 @@ async function lookupRegistration() {
 }
 
 function renderManageForm(r) {
+  mgDinnerRsvp = r.dinner_rsvp;
   const dietaryOpts = ['Vegetarian', 'Vegan'];
   const dchecks = dietaryOpts.map(d => {
     const on = (r.dietary || []).includes(d);
@@ -905,6 +949,12 @@ function renderManageForm(r) {
       <div class="field"><label class="flabel">AV / presentation needs</label><textarea id="mg-av">${esc(r.av_needs || '')}</textarea></div>
       <div class="field"><label class="flabel">Travel &amp; parking</label><textarea id="mg-travel">${esc(r.travel_parking || '')}</textarea></div>
       <div class="field full"><label class="flabel">Headshot ${r.headshot_url ? '· <a href="' + esc(r.headshot_url) + '" target="_blank" rel="noopener" style="text-transform:none;letter-spacing:0">view current</a>' : ''}</label><input type="file" id="mg-headshot" accept="image/*" /></div>
+      <div class="field full"><label class="flabel">Dinner RSVP</label>
+        <div class="rsvp-toggle">
+          <button type="button" class="rsvp-opt ${r.dinner_rsvp === true ? 'on' : ''}" id="mg-rsvp-yes" onclick="setMgRsvp(true)">Yes, I'll attend</button>
+          <button type="button" class="rsvp-opt ${r.dinner_rsvp === false ? 'on' : ''}" id="mg-rsvp-no" onclick="setMgRsvp(false)">No, I can't make it</button>
+        </div>
+      </div>
     </div>` : '';
   const posterRow = isVip ? '' : `<div class="field" style="margin-top:12px"><label class="check ${r.presenting_poster ? 'on' : ''}" onclick="toggleCheck(this)" id="row-mgposter"><input type="checkbox" id="chk-mgposter" ${r.presenting_poster ? 'checked' : ''} /> I plan to present a poster</label></div>`;
   document.getElementById('manage-form').innerHTML = `
@@ -964,6 +1014,7 @@ async function saveManage() {
     updates.bio = document.getElementById('mg-bio').value.trim();
     updates.av_needs = document.getElementById('mg-av').value.trim();
     updates.travel_parking = document.getElementById('mg-travel').value.trim();
+    if (mgDinnerRsvp !== undefined) updates.dinner_rsvp = mgDinnerRsvp;
     const file = document.getElementById('mg-headshot').files[0];
     if (file) {
       const path = `headshots/${Date.now()}-${file.name.replace(/[^\w.\-]/g, '_')}`;
