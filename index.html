@@ -645,8 +645,18 @@ let vipType = '';                // speaker | panelist | moderator | foundation
 const VIP_LABELS = { vip: 'VIP', speaker: 'Speaker', panelist: 'Panelist', moderator: 'Moderator', foundation: 'Foundation member' };
 
 function flowSteps() {
-  const base = [{ dom: 1, label: 'Contact information' }, { dom: 2, label: 'Preferences' }];
-  if (regCategory === 'vip') base.push({ dom: 3, label: 'Program & logistics' });
+  // Read labels from the actual card titles so the tracker always mirrors
+  // whatever's been edited in the admin panel — never a separate copy.
+  const fromEl = (sel, fb) => {
+    const el = document.querySelector(sel);
+    const t = el && el.textContent.trim();
+    return t ? t : fb;
+  };
+  const base = [
+    { dom: 1, label: fromEl('#s1-title', 'Contact information') },
+    { dom: 2, label: fromEl('#s2-title', 'Preferences') }
+  ];
+  if (regCategory === 'vip') base.push({ dom: 3, label: fromEl('[data-ui="reg.vip_title"]', 'Program & logistics') });
   base.push({ dom: 4, label: 'Confirmation' });
   return base;
 }
