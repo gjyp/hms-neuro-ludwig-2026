@@ -158,6 +158,7 @@ tbody tr:hover{background:#FDF9F0}
       <button class="tab" data-p="docs" onclick="showPanel('docs',this)">Documents</button>
       <button class="tab" data-p="event" onclick="showPanel('event',this)">Event &amp; Settings</button>
       <button class="tab" data-p="people" onclick="showPanel('people',this)">Speakers &amp; Program</button>
+      <button class="tab" data-p="pagetext" onclick="showPanel('pagetext',this)">Page Text</button>
     </div>
 
     <!-- REGISTRATIONS -->
@@ -245,6 +246,14 @@ tbody tr:hover{background:#FDF9F0}
       <div class="panel-sub">Keynote, moderators, speakers, poster-session text, and form option lists.</div>
       <div id="people-editor"></div>
     </div>
+
+    <!-- PAGE TEXT -->
+    <div class="panel" id="panel-pagetext">
+      <div class="panel-title">Page text</div>
+      <div class="panel-sub">Every label, heading, and description on the public page. Edit any of them and Save.</div>
+      <div class="toolbar"><input class="search" type="text" id="ui-q" placeholder="Filter labels…" oninput="renderUiTextEditor()" /><button class="btn btn-gold ml-auto" onclick="saveUiText()">Save page text</button><span class="save-note" id="ui-note" style="align-self:center"></span></div>
+      <div id="uitext-editor"></div>
+    </div>
   </div>
 </div>
 
@@ -329,8 +338,8 @@ tbody tr:hover{background:#FDF9F0}
 
 <script>
 // ═══════ CONFIG — same project as the public app ═══════
-const SUPABASE_URL = 'https://wjmzixhctirbjlunwncc.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_R7bCv2OAq_bxGzibisvu4Q_4ovADX1d';
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY';
 const BUCKET = 'symposium-files';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -642,7 +651,7 @@ async function addDocSlot(){
 // ═══════ SITE CONTENT ═══════
 async function loadContent(){
   const {data}=await sb.from('site_content').select('*').order('sort_order');
-  content=data||[]; renderEventEditor(); renderPeopleEditor();
+  content=data||[]; renderEventEditor(); renderPeopleEditor(); renderUiTextEditor();
 }
 function contentRow(id){return content.find(r=>r.id===id);}
 function fieldRow(cid,key,label,val,wide){
@@ -864,6 +873,63 @@ async function deleteContentRow(id){
   if(!confirm('Delete this item?'))return;
   await sb.from('site_content').delete().eq('id',id);
   loadContent();
+}
+
+// ═══════ PAGE TEXT (UI labels) ═══════
+const UI_GROUPS = {
+  sponsor:'Header', tab:'Tabs', program:'Program page',
+  reg:'Registration form', btn:'Buttons', conf:'Confirmation screen',
+  closed:'Registration closed', lookup:'Look-up screen', manage:'Manage screen',
+  posters:'Poster section', poster:'Poster form'
+};
+function uiLabel(key){
+  const part = key.includes('.') ? key.split('.').slice(1).join('.') : key;
+  let s = part.replace(/_/g,' ');
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+function renderUiTextEditor(){
+  const row = contentRow('ui_text');
+  const box = document.getElementById('uitext-editor');
+  if(!row){ box.innerHTML='<div class="note">The page-text record isn\'t in the database yet. Run <b>ui-text-setup.sql</b> in the Supabase SQL editor, then reload.</div>'; return; }
+  const dict = row.content||{};
+  const q=(document.getElementById('ui-q').value||'').toLowerCase();
+  const groups={};
+  Object.keys(dict).sort().forEach(k=>{
+    const g=k.split('.')[0];
+    (groups[g]=groups[g]||[]).push(k);
+  });
+  let html='';
+  Object.keys(UI_GROUPS).forEach(g=>{
+    const keys=(groups[g]||[]).filter(k=>!q || k.toLowerCase().includes(q) || String(dict[k]).toLowerCase().includes(q));
+    if(!keys.length) return;
+    html+=`<div class="content-block"><h3>${esc(UI_GROUPS[g])}</h3>`;
+    keys.forEach(k=>{
+      const val=dict[k]==null?'':dict[k];
+      const multi = String(val).length>45;
+      const field = multi
+        ? `<textarea id="ui-${esc(k)}">${esc(val)}</textarea>`
+        : `<input type="text" id="ui-${esc(k)}" value="${attr(val)}" />`;
+      html+=`<div class="field"><label>${esc(uiLabel(k))} <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400">${esc(k)}</span></label>${field}</div>`;
+    });
+    html+=`</div>`;
+  });
+  box.innerHTML = html || '<div class="note">No labels match your filter.</div>';
+}
+async function saveUiText(){
+  const row = contentRow('ui_text');
+  const note=document.getElementById('ui-note');
+  if(!row){ note.textContent='Run ui-text-setup.sql first.'; note.style.color='var(--err)'; return; }
+  const updated={...row.content};
+  Object.keys(updated).forEach(k=>{
+    const el=document.getElementById('ui-'+k);
+    if(el) updated[k]=el.value;
+  });
+  note.textContent='Saving…'; note.style.color='var(--muted)';
+  const {error}=await sb.from('site_content').update({content:updated}).eq('id','ui_text');
+  if(error){ note.textContent='Error: '+error.message; note.style.color='var(--err)'; return; }
+  row.content=updated;
+  note.textContent='Saved.'; note.style.color='var(--ok)';
+  setTimeout(()=>{note.textContent='';},2000);
 }
 
 // ═══════ NAV ═══════
