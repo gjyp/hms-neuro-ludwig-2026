@@ -300,20 +300,20 @@ textarea{resize:vertical;min-height:68px}
                   </button>
                 </div>
                 <div class="vip-gate" id="vip-gate" style="display:none">
-                  <div class="field"><label class="flabel" for="vip-code" data-ui="reg.vip_code_label">Invite code</label><input type="text" id="vip-code" placeholder="From your invitation email" autocomplete="off" /></div>
+                  <div class="field"><label class="flabel" for="vip-code" data-ui="reg.vip_code_label">Invite code</label><input type="text" id="vip-code" data-ph="ph.vip_code" placeholder="From your invitation email" autocomplete="off" /></div>
                   <div class="reg-nav" style="padding-top:.5rem"><span></span><button class="btn btn-gold" onclick="startVip()" data-ui="btn.continue">Continue →</button></div>
                 </div>
               </div>
               <div class="reg-step" id="reg-step-1">
                 <div><div class="step-title" id="s1-title">Contact information</div><div class="step-sub" id="s1-sub">Tell us who you are and where you work.</div></div>
                 <div class="frow" style="margin-top:6px">
-                  <div class="field"><label class="flabel" for="fname" data-ui="reg.f_first">First name</label><input type="text" id="fname" placeholder="Jordan" autocomplete="given-name" /></div>
-                  <div class="field"><label class="flabel" for="lname" data-ui="reg.f_last">Last name</label><input type="text" id="lname" placeholder="Reeves" autocomplete="family-name" /></div>
+                  <div class="field"><label class="flabel" for="fname" data-ui="reg.f_first">First name</label><input type="text" id="fname" data-ph="ph.fname" placeholder="Jordan" autocomplete="given-name" /></div>
+                  <div class="field"><label class="flabel" for="lname" data-ui="reg.f_last">Last name</label><input type="text" id="lname" data-ph="ph.lname" placeholder="Reeves" autocomplete="family-name" /></div>
                 </div>
-                <div class="field"><label class="flabel" for="reg-email" data-ui="reg.f_email">Email address</label><input type="email" id="reg-email" placeholder="jordan@hms.harvard.edu" autocomplete="email" /></div>
-                <div class="field"><label class="flabel" for="phone" data-ui="reg.f_phone">Phone number</label><input type="tel" id="phone" placeholder="+1 (617) 000-0000" autocomplete="tel" /><span style="font-size:11.5px;color:var(--muted)" data-ui="reg.f_phone_help">Used together with your email to look up your registration later.</span></div>
-                <div class="field"><label class="flabel" for="institution" data-ui="reg.f_institution">Institution</label><div class="ac-wrap"><input type="text" id="institution" placeholder="e.g. Harvard Medical School" autocomplete="off" /><div class="ac-drop" id="ac-institution"></div></div></div>
-                <div class="field" id="field-lab"><label class="flabel" for="lab" data-ui="reg.f_lab">Lab / Department</label><input type="text" id="lab" placeholder="e.g. Department of Neurobiology" /></div>
+                <div class="field"><label class="flabel" for="reg-email" data-ui="reg.f_email">Email address</label><input type="email" id="reg-email" data-ph="ph.email" placeholder="jordan@hms.harvard.edu" autocomplete="email" /></div>
+                <div class="field"><label class="flabel" for="phone" data-ui="reg.f_phone">Phone number</label><input type="tel" id="phone" data-ph="ph.phone" placeholder="+1 (617) 000-0000" autocomplete="tel" /><span style="font-size:11.5px;color:var(--muted)" data-ui="reg.f_phone_help">Used together with your email to look up your registration later.</span></div>
+                <div class="field"><label class="flabel" for="institution" data-ui="reg.f_institution">Institution</label><div class="ac-wrap"><input type="text" id="institution" data-ph="ph.institution" placeholder="e.g. Harvard Medical School" autocomplete="off" /><div class="ac-drop" id="ac-institution"></div></div></div>
+                <div class="field" id="field-lab"><label class="flabel" for="lab" data-ui="reg.f_lab">Lab / Department</label><input type="text" id="lab" data-ph="ph.lab" placeholder="e.g. Department of Neurobiology" /></div>
                 <div class="field" id="field-role"><label class="flabel" for="role" data-ui="reg.f_role">Role</label><select id="role"><option value="">Select your role</option></select></div>
                 <div class="reg-nav"><button class="btn btn-ghost" onclick="goStep(0,true)" data-ui="btn.back">← Back</button><button class="btn btn-gold" onclick="validateStep1()" data-ui="btn.continue">Continue →</button></div>
               </div>
@@ -325,8 +325,8 @@ textarea{resize:vertical;min-height:68px}
                     <label class="check" onclick="toggleCheck(this)"><input type="checkbox" /> None</label>
                     <label class="check" onclick="toggleCheck(this)"><input type="checkbox" /> Vegetarian</label>
                     <label class="check" onclick="toggleCheck(this)"><input type="checkbox" /> Vegan</label>
-                    <div class="check" id="row-other"><input type="checkbox" id="chk-other" onchange="toggleInline('other')" /><span>Other:</span><input type="text" class="inline-inp" id="txt-other" placeholder="Please specify" disabled /></div>
-                    <div class="check" id="row-allergy"><input type="checkbox" id="chk-allergy" onchange="toggleInline('allergy')" /><span>Allergy:</span><input type="text" class="inline-inp" id="txt-allergy" placeholder="Please specify" disabled /></div>
+                    <div class="check" id="row-other"><input type="checkbox" id="chk-other" onchange="toggleInline('other')" /><span>Other:</span><input type="text" class="inline-inp" id="txt-other" data-ph="ph.dietary_other" placeholder="Please specify" disabled /></div>
+                    <div class="check" id="row-allergy"><input type="checkbox" id="chk-allergy" onchange="toggleInline('allergy')" /><span>Allergy:</span><input type="text" class="inline-inp" id="txt-allergy" data-ph="ph.dietary_allergy" placeholder="Please specify" disabled /></div>
                   </div>
                 </div>
                 <div class="field" id="poster-field">
@@ -334,7 +334,7 @@ textarea{resize:vertical;min-height:68px}
                   <label class="check" id="row-poster" onclick="toggleCheck(this)"><input type="checkbox" id="chk-poster" /> <span data-ui="reg.poster_check">I plan to present a poster</span></label>
                   <span style="font-size:11.5px;color:var(--muted)" data-ui="reg.poster_help">Poster presenters also submit an abstract in the Poster Session tab.</span>
                 </div>
-                <div class="field"><label class="flabel" for="requests" data-ui="reg.accessibility">Accessibility &amp; special requests</label><textarea id="requests" placeholder="Request accommodations or note questions about physical access here."></textarea></div>
+                <div class="field"><label class="flabel" for="requests" data-ui="reg.accessibility">Accessibility &amp; special requests</label><textarea id="requests" data-ph="ph.requests" placeholder="Request accommodations or note questions about physical access here."></textarea></div>
                 <div class="reg-nav">
                   <button class="btn btn-ghost" onclick="goStep(1,true)" data-ui="btn.back">← Back</button>
                   <button class="btn btn-gold" id="btn-submit" onclick="step2Next()" data-ui="btn.complete">Complete registration →</button>
@@ -342,11 +342,11 @@ textarea{resize:vertical;min-height:68px}
               </div>
               <div class="reg-step" id="reg-step-3">
                 <div><div class="step-title" data-ui="reg.vip_title">Program &amp; logistics</div><div class="step-sub" data-ui="reg.vip_subtitle">Details for the printed program and day-of planning.</div></div>
-                <div class="field" style="margin-top:6px"><label class="flabel" for="v-talk"><span data-ui="reg.vip_talk">Talk / panel title</span> <span style="text-transform:none;letter-spacing:0;color:var(--muted)" data-ui="reg.vip_talk_note">(if applicable)</span></label><input type="text" id="v-talk" placeholder="e.g. New therapeutic targets in tauopathies" /></div>
-                <div class="field"><label class="flabel" for="v-bio" data-ui="reg.vip_bio">Short bio for the program</label><textarea id="v-bio" placeholder="2–4 sentences, written in the third person."></textarea></div>
+                <div class="field" style="margin-top:6px"><label class="flabel" for="v-talk"><span data-ui="reg.vip_talk">Talk / panel title</span> <span style="text-transform:none;letter-spacing:0;color:var(--muted)" data-ui="reg.vip_talk_note">(if applicable)</span></label><input type="text" id="v-talk" data-ph="ph.v_talk" placeholder="e.g. New therapeutic targets in tauopathies" /></div>
+                <div class="field"><label class="flabel" for="v-bio" data-ui="reg.vip_bio">Short bio for the program</label><textarea id="v-bio" data-ph="ph.v_bio" placeholder="2–4 sentences, written in the third person."></textarea></div>
                 <div class="field"><label class="flabel" for="v-headshot" data-ui="reg.vip_headshot">Headshot</label><input type="file" id="v-headshot" accept="image/*" /><span style="font-size:11.5px;color:var(--muted)" data-ui="reg.vip_headshot_help">High-resolution photo for the program and website.</span></div>
-                <div class="field"><label class="flabel" for="v-av" data-ui="reg.vip_av">AV / presentation needs</label><textarea id="v-av" placeholder="e.g. Presenting from my own laptop (USB-C), need a lavalier mic, playing video with audio."></textarea></div>
-                <div class="field"><label class="flabel" for="v-travel" data-ui="reg.vip_travel">Travel &amp; parking</label><textarea id="v-travel" placeholder="e.g. Arriving by car and need a parking spot; flying in the night before."></textarea></div>
+                <div class="field"><label class="flabel" for="v-av" data-ui="reg.vip_av">AV / presentation needs</label><textarea id="v-av" data-ph="ph.v_av" placeholder="e.g. Presenting from my own laptop (USB-C), need a lavalier mic, playing video with audio."></textarea></div>
+                <div class="field"><label class="flabel" for="v-travel" data-ui="reg.vip_travel">Travel &amp; parking</label><textarea id="v-travel" data-ph="ph.v_travel" placeholder="e.g. Arriving by car and need a parking spot; flying in the night before."></textarea></div>
                 <div class="reg-nav">
                   <button class="btn btn-ghost" onclick="goStep(2,true)" data-ui="btn.back">← Back</button>
                   <button class="btn btn-gold" id="btn-submit-vip" onclick="submitRegistration()" data-ui="btn.complete">Complete registration →</button>
@@ -391,8 +391,8 @@ textarea{resize:vertical;min-height:68px}
           <div class="lookup-card">
             <h3 data-ui="lookup.card_title">Look up your registration</h3>
             <p data-ui="lookup.card_text">We match your email and phone number before showing any details.</p>
-            <input type="email" id="lk-email" placeholder="Registration email" autocomplete="email" />
-            <input type="tel" id="lk-phone" placeholder="Phone number" onkeydown="if(event.key==='Enter')lookupRegistration()" />
+            <input type="email" id="lk-email" data-ph="ph.lk_email" placeholder="Registration email" autocomplete="email" />
+            <input type="tel" id="lk-phone" data-ph="ph.lk_phone" placeholder="Phone number" onkeydown="if(event.key==='Enter')lookupRegistration()" />
             <button class="btn btn-gold" onclick="lookupRegistration()" style="width:100%" data-ui="lookup.btn">Look up registration</button>
             <div class="lookup-msg" id="lk-msg"></div>
           </div>
@@ -416,14 +416,14 @@ textarea{resize:vertical;min-height:68px}
       <div class="pf-title" id="pf-title">Submit a poster abstract</div>
       <div class="pf-sub" id="pf-sub"><span data-ui="poster.form_note">Poster presenters must also register as attendees. Abstract deadline:</span> <b id="pf-deadline">September 15, 2026</b>.</div>
       <div class="frow" style="margin-bottom:10px">
-        <div class="field"><label class="flabel" for="p-name" data-ui="poster.f_name">Presenter name</label><input type="text" id="p-name" placeholder="Jordan Reeves" /></div>
-        <div class="field"><label class="flabel" for="p-email" data-ui="poster.f_email">Presenter email</label><input type="email" id="p-email" placeholder="jordan@hms.harvard.edu" /></div>
+        <div class="field"><label class="flabel" for="p-name" data-ui="poster.f_name">Presenter name</label><input type="text" id="p-name" data-ph="ph.p_name" placeholder="Jordan Reeves" /></div>
+        <div class="field"><label class="flabel" for="p-email" data-ui="poster.f_email">Presenter email</label><input type="email" id="p-email" data-ph="ph.p_email" placeholder="jordan@hms.harvard.edu" /></div>
       </div>
-      <div class="field" style="margin-bottom:10px"><label class="flabel" for="p-title" data-ui="poster.f_title">Poster title</label><input type="text" id="p-title" placeholder="e.g. Mechanisms of tau propagation in cortical circuits" /></div>
-      <div class="field" style="margin-bottom:10px"><label class="flabel" for="p-authors" data-ui="poster.f_authors">Author(s)</label><input type="text" id="p-authors" placeholder="e.g. J. Reeves, A. Smith, B. Datta" /></div>
+      <div class="field" style="margin-bottom:10px"><label class="flabel" for="p-title" data-ui="poster.f_title">Poster title</label><input type="text" id="p-title" data-ph="ph.p_title" placeholder="e.g. Mechanisms of tau propagation in cortical circuits" /></div>
+      <div class="field" style="margin-bottom:10px"><label class="flabel" for="p-authors" data-ui="poster.f_authors">Author(s)</label><input type="text" id="p-authors" data-ph="ph.p_authors" placeholder="e.g. J. Reeves, A. Smith, B. Datta" /></div>
       <div class="frow" style="margin-bottom:10px">
-        <div class="field"><label class="flabel" for="p-inst" data-ui="poster.f_institution">Institution</label><input type="text" id="p-inst" placeholder="e.g. Harvard Medical School" /></div>
-        <div class="field"><label class="flabel" for="p-lab" data-ui="poster.f_lab">Lab / Department</label><input type="text" id="p-lab" placeholder="e.g. Department of Neurology" /></div>
+        <div class="field"><label class="flabel" for="p-inst" data-ui="poster.f_institution">Institution</label><input type="text" id="p-inst" data-ph="ph.p_inst" placeholder="e.g. Harvard Medical School" /></div>
+        <div class="field"><label class="flabel" for="p-lab" data-ui="poster.f_lab">Lab / Department</label><input type="text" id="p-lab" data-ph="ph.p_lab" placeholder="e.g. Department of Neurology" /></div>
       </div>
       <div class="frow" style="margin-bottom:10px">
         <div class="field"><label class="flabel" for="p-cat" data-ui="poster.f_category">Presenter category</label><select id="p-cat"><option value="">Select category</option></select></div>
@@ -431,7 +431,7 @@ textarea{resize:vertical;min-height:68px}
       </div>
       <div class="field" style="margin-bottom:4px">
         <label class="flabel" for="p-abstract" data-ui="poster.f_abstract">Abstract</label>
-        <textarea id="p-abstract" style="min-height:120px" oninput="updateWordCount()" placeholder="Paste your abstract here."></textarea>
+        <textarea id="p-abstract" data-ph="ph.p_abstract" style="min-height:120px" oninput="updateWordCount()" placeholder="Paste your abstract here."></textarea>
         <div class="wc" id="p-wc">0 / 300 words</div>
       </div>
       <button class="btn btn-gold" id="btn-poster" onclick="submitPoster()" data-ui="poster.submit_btn">Submit abstract</button>
@@ -469,6 +469,13 @@ function applyUiText() {
   document.querySelectorAll('[data-ui]').forEach(el => {
     const k = el.getAttribute('data-ui');
     if (UITEXT[k] != null && UITEXT[k] !== '') el.textContent = UITEXT[k];
+  });
+}
+// Overwrites input/textarea placeholders from the UITEXT dict (ph.* keys).
+function applyPlaceholders() {
+  document.querySelectorAll('[data-ph]').forEach(el => {
+    const k = el.getAttribute('data-ph');
+    if (UITEXT[k] != null && UITEXT[k] !== '') el.placeholder = UITEXT[k];
   });
 }
 
@@ -568,6 +575,7 @@ async function loadSiteContent() {
   }
 
   applyUiText();
+  applyPlaceholders();
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
@@ -911,8 +919,8 @@ function renderManageForm(r) {
     </div>
     <div class="mg-heading">Preferences</div>
     <div class="checks" id="mg-checks">${dchecks}
-      <div class="check ${otherEntry ? 'on' : ''}" id="row-mgother"><input type="checkbox" id="chk-mgother" ${otherEntry ? 'checked' : ''} onchange="toggleMg('mgother')" /><span>Other:</span><input type="text" class="inline-inp" id="txt-mgother" value="${esc(otherVal)}" placeholder="Please specify" ${otherEntry ? '' : 'disabled'} /></div>
-      <div class="check ${r.allergy ? 'on' : ''}" id="row-mgallergy"><input type="checkbox" id="chk-mgallergy" ${r.allergy ? 'checked' : ''} onchange="toggleMg('mgallergy')" /><span>Allergy:</span><input type="text" class="inline-inp" id="txt-mgallergy" value="${esc(r.allergy || '')}" placeholder="Please specify" ${r.allergy ? '' : 'disabled'} /></div>
+      <div class="check ${otherEntry ? 'on' : ''}" id="row-mgother"><input type="checkbox" id="chk-mgother" ${otherEntry ? 'checked' : ''} onchange="toggleMg('mgother')" /><span>Other:</span><input type="text" class="inline-inp" id="txt-mgother" value="${esc(otherVal)}" placeholder="${esc(UI('ph.dietary_other','Please specify'))}" ${otherEntry ? '' : 'disabled'} /></div>
+      <div class="check ${r.allergy ? 'on' : ''}" id="row-mgallergy"><input type="checkbox" id="chk-mgallergy" ${r.allergy ? 'checked' : ''} onchange="toggleMg('mgallergy')" /><span>Allergy:</span><input type="text" class="inline-inp" id="txt-mgallergy" value="${esc(r.allergy || '')}" placeholder="${esc(UI('ph.dietary_allergy','Please specify'))}" ${r.allergy ? '' : 'disabled'} /></div>
     </div>
     ${posterRow}
     ${vipSection}
