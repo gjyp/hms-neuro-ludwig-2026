@@ -926,6 +926,7 @@ const UI_SECTIONS = [
   { title:'Registration · confirmation screen', hint:'The "you\'re registered" summary', keys:['conf.'] },
   { title:'Registration · closed / look-up / manage', hint:'Closed message and self-service look-up', keys:['closed.','lookup.','manage.'] },
   { title:'Poster Session tab', hint:'Poster section and abstract form', keys:['posters.','poster.'] },
+  { title:'Field example text (placeholders)', hint:'The faint grey example text inside empty boxes', keys:['ph.'] },
   { title:'Other', hint:'', keys:[] }  // catch-all for anything unmatched
 ];
 // Keys no longer shown on the page (feature removed) — hidden from the editor.
@@ -948,7 +949,16 @@ const UI_HINTS = {
   'poster.form_note':'Note above the abstract form (deadline follows it)',
   'poster.contact_prefix':'Text before the contact email at the page bottom',
   'closed.card_text':'Shown when registration is closed',
-  'btn.submitting':'Shown briefly while a form is submitting'
+  'btn.submitting':'Shown briefly while a form is submitting',
+  'ph.fname':'First name field','ph.lname':'Last name field','ph.email':'Email field',
+  'ph.phone':'Phone field','ph.institution':'Institution field','ph.lab':'Lab / department field',
+  'ph.dietary_other':'Dietary "Other" box','ph.dietary_allergy':'Dietary "Allergy" box',
+  'ph.requests':'Accessibility / special-requests box','ph.vip_code':'Invite-code box',
+  'ph.v_talk':'VIP talk-title field','ph.v_bio':'VIP bio field','ph.v_av':'VIP AV-needs field',
+  'ph.v_travel':'VIP travel field','ph.lk_email':'Look-up email field','ph.lk_phone':'Look-up phone field',
+  'ph.p_name':'Poster presenter-name field','ph.p_email':'Poster presenter-email field',
+  'ph.p_title':'Poster title field','ph.p_authors':'Poster authors field','ph.p_inst':'Poster institution field',
+  'ph.p_lab':'Poster lab field','ph.p_abstract':'Poster abstract box'
 };
 function uiLabel(key){
   const part = key.includes('.') ? key.split('.').slice(1).join('.') : key;
