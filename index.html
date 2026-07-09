@@ -313,8 +313,8 @@ textarea{resize:vertical;min-height:68px}
                 <div class="field"><label class="flabel" for="reg-email" data-ui="reg.f_email">Email address</label><input type="email" id="reg-email" placeholder="jordan@hms.harvard.edu" autocomplete="email" /></div>
                 <div class="field"><label class="flabel" for="phone" data-ui="reg.f_phone">Phone number</label><input type="tel" id="phone" placeholder="+1 (617) 000-0000" autocomplete="tel" /><span style="font-size:11.5px;color:var(--muted)" data-ui="reg.f_phone_help">Used together with your email to look up your registration later.</span></div>
                 <div class="field"><label class="flabel" for="institution" data-ui="reg.f_institution">Institution</label><div class="ac-wrap"><input type="text" id="institution" placeholder="e.g. Harvard Medical School" autocomplete="off" /><div class="ac-drop" id="ac-institution"></div></div></div>
-                <div class="field"><label class="flabel" for="lab" data-ui="reg.f_lab">Lab / Department</label><input type="text" id="lab" placeholder="e.g. Department of Neurobiology" /></div>
-                <div class="field"><label class="flabel" for="role" data-ui="reg.f_role">Role</label><select id="role"><option value="">Select your role</option></select></div>
+                <div class="field" id="field-lab"><label class="flabel" for="lab" data-ui="reg.f_lab">Lab / Department</label><input type="text" id="lab" placeholder="e.g. Department of Neurobiology" /></div>
+                <div class="field" id="field-role"><label class="flabel" for="role" data-ui="reg.f_role">Role</label><select id="role"><option value="">Select your role</option></select></div>
                 <div class="reg-nav"><button class="btn btn-ghost" onclick="goStep(0,true)" data-ui="btn.back">← Back</button><button class="btn btn-gold" onclick="validateStep1()" data-ui="btn.continue">Continue →</button></div>
               </div>
               <div class="reg-step" id="reg-step-2">
@@ -702,6 +702,8 @@ function startVip() {
 function applyCategoryUI() {
   const vip = regCategory === 'vip';
   document.getElementById('poster-field').style.display = vip ? 'none' : '';
+  document.getElementById('field-lab').style.display = vip ? 'none' : '';
+  document.getElementById('field-role').style.display = vip ? 'none' : '';
   document.getElementById('btn-submit').textContent = vip ? UI('btn.continue','Continue →') : UI('btn.complete','Complete registration →');
 }
 function step2Next() {
@@ -783,6 +785,8 @@ async function submitRegistration() {
       reg.headshot_url = sb.storage.from('symposium-files').getPublicUrl(path).data.publicUrl;
     }
     reg.attendee_type = vipType;
+    reg.lab_department = '';
+    reg.role_category = '';
     reg.talk_title = document.getElementById('v-talk').value.trim();
     reg.bio = document.getElementById('v-bio').value.trim();
     reg.av_needs = document.getElementById('v-av').value.trim();
