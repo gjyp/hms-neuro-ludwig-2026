@@ -74,7 +74,7 @@ tbody tr:hover{background:#FDF9F0}
 .pill.confirmed{background:#E3F2E7;color:var(--ok)}
 .pill.cancelled{background:var(--err-bg);color:var(--err)}
 .pill.attendee{background:#E8EDF7;color:var(--navy)}
-.pill.speaker,.pill.panelist,.pill.moderator{background:var(--gold);color:var(--navy-deep)}
+.pill.vip,.pill.speaker,.pill.panelist,.pill.moderator{background:var(--gold);color:var(--navy-deep)}
 .pill.foundation,.pill.organizer{background:#FCE9D8;color:var(--coral)}
 .pill.submitted{background:#E8EDF7;color:var(--navy)}
 .pill.accepted{background:#E3F2E7;color:var(--ok)}
@@ -280,7 +280,7 @@ tbody tr:hover{background:#FDF9F0}
         <div class="field"><label>Role</label><input type="text" id="rm-role" /></div>
         <div class="field"><label>Attendee type</label>
           <select id="rm-type">
-            <option value="attendee">Attendee</option><option value="speaker">Speaker</option>
+            <option value="attendee">Attendee</option><option value="vip">VIP</option><option value="speaker">Speaker</option>
             <option value="panelist">Panelist</option><option value="moderator">Moderator</option>
             <option value="foundation">Foundation</option><option value="organizer">Organizer</option>
           </select>
