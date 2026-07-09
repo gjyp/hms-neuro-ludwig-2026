@@ -299,17 +299,7 @@ textarea{resize:vertical;min-height:68px}
                   </button>
                 </div>
                 <div class="vip-gate" id="vip-gate" style="display:none">
-                  <div class="frow">
-                    <div class="field"><label class="flabel" for="vip-type" data-ui="reg.vip_type_label">I am attending as</label>
-                      <select id="vip-type">
-                        <option value="speaker">Speaker</option>
-                        <option value="panelist">Panelist</option>
-                        <option value="moderator">Moderator</option>
-                        <option value="foundation">Foundation member</option>
-                      </select>
-                    </div>
-                    <div class="field"><label class="flabel" for="vip-code" data-ui="reg.vip_code_label">Invite code</label><input type="text" id="vip-code" placeholder="From your invitation email" autocomplete="off" /></div>
-                  </div>
+                  <div class="field"><label class="flabel" for="vip-code" data-ui="reg.vip_code_label">Invite code</label><input type="text" id="vip-code" placeholder="From your invitation email" autocomplete="off" /></div>
                   <div class="reg-nav" style="padding-top:.5rem"><span></span><button class="btn btn-gold" onclick="startVip()" data-ui="btn.continue">Continue →</button></div>
                 </div>
               </div>
@@ -644,7 +634,7 @@ function applyPosterState(isOpen) {
 // ═══════ REGISTRATION FLOW ═══════
 let regCategory = null;          // 'attendee' | 'vip'
 let vipType = '';                // speaker | panelist | moderator | foundation
-const VIP_LABELS = { speaker: 'Speaker', panelist: 'Panelist', moderator: 'Moderator', foundation: 'Foundation member' };
+const VIP_LABELS = { vip: 'VIP', speaker: 'Speaker', panelist: 'Panelist', moderator: 'Moderator', foundation: 'Foundation member' };
 
 function flowSteps() {
   const base = [{ dom: 1, label: 'Contact information' }, { dom: 2, label: 'Preferences' }];
@@ -687,7 +677,7 @@ function startVip() {
   if (!code) return showErr('reg-error', 'Enter the invite code from your invitation email.');
   showErr('reg-error', '');
   regCategory = 'vip';
-  vipType = document.getElementById('vip-type').value;
+  vipType = 'vip';
   applyCategoryUI();
   goStep(1);
 }
